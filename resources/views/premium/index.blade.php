@@ -4,7 +4,7 @@
 <div class="max-w-4xl mx-auto">
     <div class="bg-white rounded-lg shadow p-6">
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-yellow-600 mb-2">⭐ Upgrade ke Premium ⭐</h1>
+            <h1 class="text-3xl font-bold text-yellow-600 mb-2">Upgrade ke Premium1</h1>
             <p class="text-gray-600">Akses semua modul eksklusif dan fitur lengkap!</p>
         </div>
         

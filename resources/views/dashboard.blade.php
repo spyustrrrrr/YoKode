@@ -181,39 +181,95 @@
 </div>
 @endif
         
-        <!-- Lesson List -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold mb-4">📚 Daftar Modul Belajar</h2>
-            <div class="space-y-3">
-                @foreach($lessons as $lesson)
-                    <a href="{{ route('lesson.show', $lesson->id) }}" 
-                       class="block border rounded-lg p-4 hover:shadow-md transition {{ in_array($lesson->id, $completedLessons) ? 'bg-green-50 border-green-300' : 'hover:bg-gray-50' }}">
-                        <div class="flex items-center justify-between">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-gray-400 text-sm">#{{ $lesson->order_number }}</span>
-                                    <h3 class="font-semibold text-lg">{{ $lesson->title }}</h3>
-                                    @if($lesson->is_premium)
-                                        <span class="text-xs bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded">Premium</span>
-                                    @endif
-                                    @if(in_array($lesson->id, $completedLessons))
-                                        <span class="text-xs bg-green-200 text-green-800 px-2 py-0.5 rounded">✓ Selesai</span>
+<!-- Daftar Modul Belajar - GROUPING -->
+<div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">📚 Modul Belajar</h2>
+    
+    @if($categories->isEmpty())
+        <div class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-3">📭</div>
+            <p>Belum ada modul yang tersedia.</p>
+            <p class="text-sm">Admin sedang menyiapkan materi belajar.</p>
+        </div>
+    @else
+        @foreach($categories as $category)
+            <div class="mb-6 last:mb-0 border-b last:border-b-0 pb-4 last:pb-0">
+                <!-- Category Header -->
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">{{ $category->icon }}</span>
+                        <h3 class="text-lg font-semibold text-gray-800">{{ $category->name }}</h3>
+                        @if($category->progress > 0)
+                            <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                                {{ $category->progress }}%
+                            </span>
+                        @else
+                            <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+                                Belum dimulai
+                            </span>
+                        @endif
+                    </div>
+                    <p class="text-xs text-gray-400">
+                        {{ $category->completed_count ?? 0 }} / {{ $category->total_count ?? $category->lessons->count() }} modul
+                    </p>
+                </div>
+                
+                <!-- Progress Bar per Kategori -->
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mb-3">
+                    <div class="bg-{{ $category->color }}-500 h-1.5 rounded-full" style="width: {{ $category->progress }}%;"></div>
+                </div>
+                
+                <!-- Description -->
+                @if($category->description)
+                    <p class="text-sm text-gray-500 mb-3">{{ $category->description }}</p>
+                @endif
+                
+                <!-- Lessons in Category -->
+                <div class="space-y-2">
+                    @foreach($category->lessons as $lesson)
+                        @php
+                            $isCompleted = in_array($lesson->id, $completedLessons);
+                            $isLocked = $lesson->is_premium && !Auth::user()->is_premium_active;
+                        @endphp
+                        
+                        <a href="{{ route('lesson.show', $lesson->id) }}" 
+                           class="block border rounded-lg p-3 hover:shadow-md transition {{ $isCompleted ? 'bg-green-50 border-green-300' : ($isLocked ? 'bg-gray-50 border-gray-200 opacity-70' : 'hover:bg-gray-50') }}">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="text-gray-400 text-xs">#{{ $lesson->order_number }}</span>
+                                        <span class="font-medium {{ $isCompleted ? 'text-green-700' : ($isLocked ? 'text-gray-400' : '') }}">
+                                            {{ $lesson->title }}
+                                        </span>
+                                        @if($lesson->is_premium)
+                                            <span class="text-xs bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded">⭐ Premium</span>
+                                        @endif
+                                        @if($isCompleted)
+                                            <span class="text-xs bg-green-200 text-green-800 px-2 py-0.5 rounded">✓ Selesai</span>
+                                        @endif
+                                        @if($isLocked)
+                                            <span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">🔒 Terkunci</span>
+                                        @endif
+                                    </div>
+                                    <p class="text-gray-500 text-xs mt-1">⭐ +{{ $lesson->exp_reward }} EXP</p>
+                                </div>
+                                <div>
+                                    @if($isCompleted)
+                                        <span class="text-green-600 text-xl">✓</span>
+                                    @elseif($isLocked)
+                                        <span class="text-gray-400">🔒</span>
+                                    @else
+                                        <span class="text-blue-600 text-sm font-medium">Mulai →</span>
                                     @endif
                                 </div>
-                                <p class="text-gray-500 text-sm mt-1">⭐ +{{ $lesson->exp_reward }} EXP</p>
                             </div>
-                            <div>
-                                @if(in_array($lesson->id, $completedLessons))
-                                    <span class="text-green-600 text-2xl">✓</span>
-                                @else
-                                    <span class="text-blue-600 font-medium">Mulai →</span>
-                                @endif
-                            </div>
-                        </div>
-                    </a>
-                @endforeach
+                        </a>
+                    @endforeach
+                </div>
             </div>
-        </div>
+        @endforeach
+    @endif
+</div>
     </div>
 </div>
 @endsection

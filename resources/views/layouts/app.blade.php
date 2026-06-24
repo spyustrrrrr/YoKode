@@ -62,7 +62,7 @@
             <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-5">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <span class="text-3xl">🎮</span>
+                        <img src="{{ asset('images/logo.png') }}" alt="YoKode" class="h-8 w-auto">
                         <span class="text-xl font-bold text-white">YoKode</span>
                     </div>
                     <button id="close-sidebar" class="text-white text-2xl">&times;</button>

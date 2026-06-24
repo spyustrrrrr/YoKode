@@ -32,7 +32,7 @@
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-2">
-                    <span class="text-3xl animate-float">🎮</span>
+                <img src="{{ asset('images/logo.png') }}" alt="YoKode" class="h-8 w-auto">
                     <span class="text-2xl font-bold text-white">YoKode</span>
                 </div>
                 <div class="flex gap-4">

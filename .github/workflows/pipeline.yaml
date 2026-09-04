@@ -10,6 +10,9 @@ jobs:
     steps:
       - name: unduh kode repository
         uses: actions/checkout@v4
+
+      - name: setup Terrafor,=m
+        uses: hashicorp/setup-terraform@v3
  
       - name: validasi naskah terraform
         working-directory: ./terraform

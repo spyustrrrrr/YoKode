@@ -18,6 +18,19 @@ spec:
         - name: yokode-app
           image: yokode-app:v1
           imagePullPolicy: IfNotPresent
+          env:
+          - name: DB_CONNECTION
+            value: "mysql"
+          - name: DB_HOST
+            value: "mysql-service"
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_DATABASE
+            value: "yokode_db"
+          - name: DB_USERNAME
+            value: "root"
+          - name: DB_PASSWORD
+            value: ""
           ports:
             - containerPort: 80
 ---

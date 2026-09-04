@@ -33,20 +33,22 @@ jobs:
       - name: suntikan image ke dalam kluster
         run: kind load docker-image yokode-app:v1 --name chart-testing
 
-      - name: deploy ke kubernetes
+      - name: Deploy ke Kubernetes & Uji Koneksi
         run: |
+          # 1. Langsung deploy Database (tanpa membuat secret)
+          kubectl apply -f k8s/mysql.yaml
+          
+          # 2. Deploy Aplikasi Laravel
           kubectl apply -f k8s/deployment.yaml
           
-          # 1. Tunggu maksimal 60 detik sampai kontainer benar-benar hidup
+          # 3. Tunggu aplikasi hidup maksimal 60 detik
           kubectl wait --for=condition=ready pod -l app=yokode --timeout=60s
           
-          # 2. Cetak bukti status dan IP
+          # 4. Cetak bukti status dan IP
           kubectl get pods -o wide
           kubectl get svc
           
-          # 3. Buka jembatan jaringan di background (&)
+          # 5. Uji koneksi web
           kubectl port-forward svc/yokode-service 8080:80 &
           sleep 5
-          
-          # 4. Tembak web server untuk mendapatkan bukti HTTP Status (misal: 200 OK atau 500)
           curl -I http://localhost:8080

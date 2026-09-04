@@ -33,7 +33,7 @@ spec:
         image: mysql:8.0
         env:
         - name: MYSQL_ALLOW_EMPTY_PASSWORD
-          value: true
+          value: "true"
         - name: MYSQL_DATABASE
           value: "yokode_db"
         ports:

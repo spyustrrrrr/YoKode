@@ -27,10 +27,10 @@ jobs:
       - name: buat kluster kubernetes (KinD)
         uses: helm/kind-action@v1.9.0
 
-      - name suntikan image ke dalam kluster
+      - name: suntikan image ke dalam kluster
         run: kind load docker-image yokode-app:v1 --name chart-testing
 
-      - name deploy ke kubernetes
+      - name: deploy ke kubernetes
         run: |
           kubectl apply -f k8s/deployment.yaml
           

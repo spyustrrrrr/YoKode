@@ -19,6 +19,12 @@ spec:
           image: yokode-app:v1
           imagePullPolicy: IfNotPresent
           env:
+          - name: APP_KEY
+            value: "base64:q2t8Hk5B9C/T7+M5X7t5M5X7t5M5X7t5M5X7t5M5X7s="
+          - name: APP_ENV
+            value: "local"
+          - name: APP_DEBUG
+            value: "true"
           - name: DB_CONNECTION
             value: "mysql"
           - name: DB_HOST

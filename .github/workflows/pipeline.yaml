@@ -1,0 +1,49 @@
+name: Yokode CI/CD All-in-One
+
+on:
+  push:
+    branches: ["main]
+
+jobs:
+  infrastructure-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: unduh kode repository
+        uses: actions/checkout@v4
+ 
+      - name: validasi naskah terraform
+        working-directory: ./terraform
+        run: |
+          terraform init -backend=false
+          terraform validate
+
+      - name: validate naskah ansible
+        working-directory: ./ansible
+        run: ansible-playbook playbook.yaml --syntax-check
+
+      - name: rakit docker image yokode
+        run: docker build -t yokode-app:v1
+
+      - name: buat kluster kubernetes (KinD)
+        uses: helm/kind-action@v1.9.0
+
+      - name suntikan image ke dalam kluster
+        run: kind load docker-image yokode-app:v1 --name chart-testing
+
+      - name deploy ke kubernetes
+        run: |
+          kubectl apply -f k8s/deployment.yaml
+          
+          # 1. Tunggu maksimal 60 detik sampai kontainer benar-benar hidup
+          kubectl wait --for=condition=ready pod -l app=yokode --timeout=60s
+          
+          # 2. Cetak bukti status dan IP
+          kubectl get pods -o wide
+          kubectl get svc
+          
+          # 3. Buka jembatan jaringan di background (&)
+          kubectl port-forward svc/yokode-service 8080:80 &
+          sleep 5
+          
+          # 4. Tembak web server untuk mendapatkan bukti HTTP Status (misal: 200 OK atau 500)
+          curl -I http://localhost:8080

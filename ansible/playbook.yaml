@@ -1,0 +1,47 @@
+---
+- name: Konfigurasi Server Kubernetes untuk Yokde
+  hosts: all
+  become: yes
+  tasks:
+    - name: Perbarui sistem operasi ubuntu
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Instal dependensi dasar sistem
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          state: present
+
+    - name: instal docker sebagai container runtime
+      apt:
+        name: docker.io
+        state: present
+
+    - name: pastikan layanan docker menyala otomatis
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: unduh kunci gpg resmi untuk Kubernetes
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+    - name: Tambahkan repositori Kubernetes
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+
+    - name: instal komponen inti Kubernetes
+      apt:
+        name:
+          - kubelet
+          - kubeadm
+          - kubectl
+          state: present

@@ -46,6 +46,8 @@ jobs:
           # 3. Tunggu aplikasi hidup maksimal 60 detik
           kubectl wait --for=condition=ready pod -l app=yokode --timeout=60s
 
+          sleep 20
+
           kubectl exec deploy/yokode-deployment -- php artisan migrate --force
           
           # 4. Cetak bukti status dan IP

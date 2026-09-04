@@ -40,9 +40,13 @@ jobs:
           
           # 2. Deploy Aplikasi Laravel
           kubectl apply -f k8s/deployment.yaml
+
+          kubectl wait --for=condition=ready pod -l app=mysql --timeout=120s
           
           # 3. Tunggu aplikasi hidup maksimal 60 detik
           kubectl wait --for=condition=ready pod -l app=yokode --timeout=60s
+
+          kubectl exec deploy/yokode-deployment -- php artisan migrate --force
           
           # 4. Cetak bukti status dan IP
           kubectl get pods -o wide

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: yokode-Deployment
+  name: yokode-deployment
   labels:
     app: yokode
 spec:
@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: yokode-Service
+  name: yokode-service
 spec:
   type: NodePort
   selector:

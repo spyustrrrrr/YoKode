@@ -15,7 +15,7 @@
           - ca-certificates
           - curl
           - software-properties-common
-          state: present
+        state: present
 
     - name: instal docker sebagai container runtime
       apt:
@@ -44,4 +44,4 @@
           - kubelet
           - kubeadm
           - kubectl
-          state: present
+        state: present
